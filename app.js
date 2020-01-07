@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 var scores, roundScore, activePlayer, gamePlaying, dice, prev_dice;
+=======
+>>>>>>> bdcd9a6cb670d2310f5499ed7dbe3df09a53c890
 
 init();
 
