@@ -1,15 +1,4 @@
-/*
-GAME RULES:
-
-- The game has 2 players, playing in rounds
-- In each turn, a player rolls a dice as many times as he whishes. Each result get added to his ROUND score
-- BUT, if the player rolls a 1, all his ROUND score gets lost. After that, it's the next player's turn
-- The player can choose to 'Hold', which means that his ROUND score gets added to his GLBAL score. After that, it's the next player's turn
-- The first player to reach 100 points on GLOBAL score wins the game
-
-*/
-
-var scores, roundScore, activePlayer, gamePlaying;
+var scores, roundScore, activePlayer, gamePlaying, dice, prev_dice;
 
 init();
 
@@ -24,10 +13,27 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
     diceDom.style.display = 'block';
     diceDom.src = 'dice-' + dice + '.png';
 
+    // check for 2 simultaneous sixes
+    if ((dice === prev_dice) && (dice === 6)) {
+
+      // set global score of activePlayer and roundScore to 0
+      scores[activePlayer] = 0;
+      roundScore = 0;
+
+      // update the UI
+      document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
+
+      // switch players
+      nextPlayer();
+
+      return;
+    }
+
     // update roundScore until we get a 1
     if (dice !== 1) {
       // add to roundScore
       roundScore += dice;
+      prev_dice = dice;
 
       // update it in UI
       document.getElementById('current-' + activePlayer).textContent = roundScore;
@@ -35,9 +41,6 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
     } else {
       // switch activePlayer
       nextPlayer();
-
-      // hide the dice
-      diceDom.style.display = 'none';
 
       // set roundScore as 0
       roundScore = 0;
@@ -68,8 +71,10 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
   }
 });
 
+// initialise a new game upon hitting new game button
 document.querySelector('.btn-new').addEventListener('click', init);
 
+// this function switches the current activePlayer
 function nextPlayer() {
   // switch activePlayer
   activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
@@ -79,16 +84,21 @@ function nextPlayer() {
   document.getElementById('current-0').textContent = '0';
   document.getElementById('current-1').textContent = '0';
 
+  // hide the dice
+  document.querySelector('.dice').style.display = 'none';
+
   // toggle active class in css
   document.querySelector('.player-0-panel').classList.toggle('active');
   document.querySelector('.player-1-panel').classList.toggle('active');
 }
 
+// this function initialises a new game
 function init() {
   scores = [0,0];
   roundScore = 0;
   activePlayer = 0;
   gamePlaying = true;
+  prev_dice = 0;
 
   // document.querySelector('#current-' + activePlayer).textContent = dice;
 
