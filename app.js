@@ -2,6 +2,8 @@ var scores, roundScore, activePlayer, gamePlaying, dice, prev_dice;
 
 init();
 
+/***** ROLL button logic *****/
+
 document.querySelector('.btn-roll').addEventListener('click', function() {
 
   if (gamePlaying) {
@@ -48,16 +50,28 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
   }
 });
 
+/***** HOLD button logic *****/
+
 document.querySelector('.btn-hold').addEventListener('click', function() {
   if (gamePlaying) {
+
     // update global score
     scores[activePlayer] += roundScore;
 
     // update UI
     document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
 
+    var input = document.querySelector('.final-score').value;
+    var maxScore;
+
+    if (input) {
+      maxScore = input;
+    } else {
+      maxScore = 100;
+    }
+
     // check if the player won
-    if (scores[activePlayer] >= 20) {
+    if (scores[activePlayer] >= maxScore) {
       document.querySelector('.dice').style.display = 'none';
       document.getElementById('current-' + activePlayer).textContent = '0';
       document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
@@ -65,6 +79,7 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
       document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
       gamePlaying = false;
     } else {
+
       // change the active player
       nextPlayer();
     }
@@ -117,4 +132,6 @@ function init() {
   document.querySelector('.player-1-panel').classList.remove('active');
 
   document.querySelector('.player-0-panel').classList.add('active');
+
+  // maxScore = window.prompt('Enter the score needed to win.');
 }
